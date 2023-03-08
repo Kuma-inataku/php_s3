@@ -25,15 +25,24 @@ $s3 = new S3Client([
 
 $params = [
     'Bucket' => $bucket_name,
-    'Key' => 's3/sample'.mt_rand(1, 10000).'.jpg',
-    'SourceFile'   => 'image/luffy.png',
+    'Key' => 's3/sample8918.jpg',
+    // 'SaveAs' => './download/path.jpg', // ファイルとして保存する時に使用
 ];
 
 try {
-    $result = $s3->putObject($params);
-    var_dump($result['ObjectURL']);
-} catch (S3Exception $e) {
+    $result = $s3->getObject($params);
+    $len = $result['ContentLength'];
+
+    //ファイルを表示
+    header("Content-Type: {$result['ContentType']}");
+    echo $result['Body'];
+
+    //ファイルダウンロード
+    header('Content-Type: application/force-download;');
+    header('Content-Length: '.$len);
+    header('Content-Disposition: attachment; filename="sample8918.jpg"');
+
+    echo $result['Body'];
+} catch(S3Exception $e) {
     var_dump($e -> getMessage());
 }
-
-var_dump('s3 saved!!!');
