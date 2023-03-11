@@ -30,12 +30,12 @@ $list = $s3->listObjects([
     'Prefix' => $prefix,
 ]);
 
-if (isset($_POST['A']) && $_POST['A']) {
-    $result = $s3->getObject([
-        'Bucket' => $bucket_name,
-        'Key' => $_POST['image'],
-    ]);
-}
+// if (isset($_POST['A']) && $_POST['A']) {
+//     $result = $s3->getObject([
+//         'Bucket' => $bucket_name,
+//         'Key' => $_POST['image'],
+//     ]);
+// }
 ?>
 
 <!DOCTYPE html>
@@ -46,7 +46,7 @@ if (isset($_POST['A']) && $_POST['A']) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <title>詳細</title>
+    <title>削除</title>
     <script>
         function submitForm() {
             const frm = document.getElementById('frm');
@@ -56,27 +56,18 @@ if (isset($_POST['A']) && $_POST['A']) {
 </head>
 <body>
     <div class="m-3">
-    <h2>詳細</h2>
+    <h2>削除</h2>
     <div>
         <div>画像を選択</div>
         <!-- セレクトボックス -->
-        <form action="" method="post" name="frm" id="frm">
-            <input type="hidden" name="A" value="true">
-            <select name="image" id="" onchange="javascript:submitForm()">
+        <form action="destroy.php" method="post" name="frm" id="frm">
+            <select name="image" id="">
                 <?php foreach ($list['Contents'] as $image) { ?>
                     <option value="<?= $image['Key'] ?>"><?= $image['Key'] ?></option>
                 <?php } ?>
             </select>
+            <input type="submit" value="delete">
         </form>
-    </div>
-    <hr>
-    <div>
-        <?php if (isset($_POST['A']) && $_POST['A']) { ?>
-            <div>選択した画像</div>
-            <img src="<?= $result['@metadata']['effectiveUri'] ?>" alt="" width="100" height="100">
-        <?php } else { ?>
-            <div class="bg-danger fw-bold text-light">画像を選択してください</div>
-        <?php } ?>
     </div>
     <hr>
     <div class="m-3">
