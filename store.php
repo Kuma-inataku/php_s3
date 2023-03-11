@@ -28,24 +28,20 @@ $s3 = new S3Client([
     'version' => $bucket_version,
 ]);
 
-$image = fopen('image/luffy.png', 'r');
-
-// TODO: fileリクエストからS3へ保存
-$params = [
-    'Bucket' => $bucket_name,
-    'Key' => 's3/sample'.mt_rand(1, 10000).'.jpg',
-    // 'SourceFile'   => 'image/luffy.png',
-    'Body'   => $image,
-];
-
+$image = fopen($_FILES["image"]["tmp_name"], 'r');
+// S3へ保存
 try {
-    $result = $s3->putObject($params);
-    var_dump($result['ObjectURL']);
+    $result = $s3->putObject([
+        'Bucket' => $bucket_name,
+        'Key' => 's3/sample'.mt_rand(1, 10000).'.jpg',
+        'Body'   => $image,
+    ]);
 } catch (S3Exception $e) {
-    // TODO: 失敗時はリダイレクト
+    // TODO: 失敗時は新規登録画面にリダイレクト
     var_dump($e -> getMessage());
 }
 
+// リダイレクト
 echo "
     <script>
         alert('done');

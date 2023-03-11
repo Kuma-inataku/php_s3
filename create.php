@@ -11,8 +11,8 @@
 <body>
     <div class="m-3">
         <h2>Create</h2>
-        <form action="store.php" method="post">
-            <input type="file" name="" id="">
+        <form action="store.php" enctype="multipart/form-data" method="post">
+            <input type="file" accept="image/*" name="image" id="">
             <input type="submit" class="btn btn-primary" value="Submit">
         </form>
     </div>
