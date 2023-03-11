@@ -33,8 +33,9 @@ $image = fopen($_FILES["image"]["tmp_name"], 'r');
 try {
     $result = $s3->putObject([
         'Bucket' => $bucket_name,
-        'Key' => 's3/sample'.mt_rand(1, 10000).'.jpg',
+        'Key' => 's3/sample'.mt_rand(1, 10000).'.png',
         'Body'   => $image,
+        'ContentType' => $_FILES["image"]["type"],
     ]);
 } catch (S3Exception $e) {
     // TODO: 失敗時は新規登録画面にリダイレクト
