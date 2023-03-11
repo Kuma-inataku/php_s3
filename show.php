@@ -30,19 +30,13 @@ $list = $s3->listObjects([
     'Bucket' => $bucket_name,
     'Prefix' => $prefix,
 ]);
-$count = count($list);
 
-// TOOD: パス名だけで画像情報取得できる？
-$result = $s3->getObject([
-    'Bucket' => $bucket_name,
-    'Key' => 's3/sample2368.jpg',
-]);
-echo '<pre>';
-var_dump($result['Body']);
-echo '</pre>';
-exit;
-$baseUrl = "https://s3-{$bucket_region}.amazonaws.com";
-$bucket = "aws-php-bucket";
+if (isset($_POST['A']) && $_POST['A']) {
+    $result = $s3->getObject([
+        'Bucket' => $bucket_name,
+        'Key' => $_POST['image'],
+    ]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -54,30 +48,38 @@ $bucket = "aws-php-bucket";
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>詳細</title>
+    <script>
+        function submitForm() {
+            const frm = document.getElementById('frm');
+            frm.submit();
+        }
+    </script>
 </head>
 <body>
     <div class="m-3">
     <h2>詳細</h2>
-    <!-- // TOOD: バイナリファイルから画像を取得する方法は？ -->
-    <img src="<?= $result['Body']?>" alt="">
     <div>
         <div>画像を選択</div>
-        <!-- TOOD: セレクトボックス -->
-        <select name="" id="">
-            <?php foreach ($list['Contents'] as $image) { ?>
-                <option value="<?= $image['Key'] ?>"><?= $image['Key'] ?></option>
-            <?php } ?>
-        </select>
+        <!-- セレクトボックス -->
+        <form action="" method="post" name="frm" id="frm">
+            <input type="hidden" name="A" value="true">
+            <select name="image" id="" onchange="javascript:submitForm()">
+                <?php foreach ($list['Contents'] as $image) { ?>
+                    <option value="<?= $image['Key'] ?>"><?= $image['Key'] ?></option>
+                <?php } ?>
+            </select>
+        </form>
     </div>
     <hr>
     <div>
         <?php if (isset($_POST['A']) && $_POST['A']) { ?>
             <div>選択した画像</div>
-            <img src="" alt="">
+            <img src="<?= $result['@metadata']['effectiveUri'] ?>" alt="" width="100" height="100">
         <?php } else { ?>
             <div class="bg-danger fw-bold text-light">画像を選択してください</div>
         <?php } ?>
     </div>
+    <hr>
     <div class="m-3">
         <a href="index.php">HOME</a>
     </div>
